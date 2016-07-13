@@ -53,7 +53,9 @@ class Corm
                 build_joins(query),
                 build_wheres(query, context),
                 build_groups(query),
-              ].compact.join(" ").strip
+              ].compact
+               .reject { |part| part.empty? }
+               .join(" ").strip
             else
               ""
             end

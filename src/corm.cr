@@ -1,17 +1,6 @@
 require "./corm/*"
 
 class Corm
-  # A class for reusing an already built partial query,
-  # it forwards all calls to the given builder clone.
-  class Scope
-    def initialize(@builder : Orm)
-    end
-
-    macro method_missing(call)
-      @builder.clone.{{call}}
-    end
-  end
-
   # Makes a class method crates an instance and delegates
   # the call to that
   macro instanced_method(name)
@@ -21,8 +10,40 @@ class Corm
     end
   end
 
+  # Creates methods for handling SQL functions like COUNT, MAX, MIN etc...
+  macro sql_function(name, value)
+    instanced_method {{name}}
+
+    def {{name}}(*columns)
+      columns.each do |column|
+        case column
+        when String
+          {{name}} column
+        when Column
+          {{name}} column
+        else
+          raise IllegalSelect.new
+        end
+      end
+      self
+    end
+
+    def {{name}}(column : String)
+      raise NoTableDefined.new("{{name}}") unless @table
+      {{name}}({@table.not_nil!, column})
+    end
+
+    def {{name}}(column : Column)
+      method :select
+      @selects << Function.new({{value}}, column)
+      self
+    end
+  end
+
+  # Available SQLFunctions
   enum SQLFunction
     Max
+    Min
     Count
   end
 
@@ -56,37 +77,15 @@ class Corm
     @wheres = [] of Where
   end
 
-  # ----------------- COUNT -----------------------
-  instanced_method maximum
-
-  def maximum(column : String)
-    raise NoTableDefined.new unless @table
-    maximum({@table.not_nil!, column})
-  end
-
-  def maximum(column : Column)
-    @selects << Function.new(SQLFunction::Max, column)
-    self
-  end
-
-  # ----------------- COUNT -----------------------
-  instanced_method count
-
-  def count(column : String)
-    raise NoTableDefined.new unless @table
-    count({@table.not_nil!, column})
-  end
-
-  def count(column : Column)
-    @selects << Function.new(SQLFunction::Count, column)
-    self
-  end
+  sql_function min, SQLFunction::Min
+  sql_function max, SQLFunction::Max
+  sql_function count, SQLFunction::Count
 
   # ----------------- GROUP -----------------------
   instanced_method group
 
   def group(column : String)
-    raise NoTableDefined.new unless @table
+    raise NoTableDefined.new("group") unless @table
     group({@table.not_nil!, column})
   end
 
@@ -113,7 +112,7 @@ class Corm
   end
 
   def select(column : String)
-    raise NoTableDefined.new unless @table
+    raise NoTableDefined.new("select") unless @table
     select({@table.not_nil!, column})
   end
 
@@ -138,7 +137,7 @@ class Corm
   end
 
   def where(column : String, operator : String, value : PG::PGValue)
-    raise NoTableDefined.new unless @table
+    raise NoTableDefined.new("where") unless @table
     where({@table.not_nil!, column}, operator, value)
   end
 
