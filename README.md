@@ -14,17 +14,33 @@ dependencies:
 
 ## Features
 TODO: Finalize feature list
-- [x] Basic SELECT
+
+Statements:
+- [x] SELECT
+- [x] INNER_JOIN
+- [x] GROUP BY
+- [x] WHERE
 - [ ] INSERT
 - [ ] CREATE
 - [ ] DELETE
-- [x] INNER_JOIN
-- [x] GROUP
+- [ ] OUTER_JOIN
+- [ ] LIMIT
+- [ ] ORDER BY
+- [ ] ALTER TABLE
+- [ ] CREATE TABLE
 
 Functions:
 - [x] MAX
 - [x] MIN
 - [x] COUNT
+- [ ] SUM
+- [ ] AVG
+- [ ] ROUND
+- [ ] DISTINCT
+
+Helpers:
+- [ ] .columns
+
 
 
 ## Usage
