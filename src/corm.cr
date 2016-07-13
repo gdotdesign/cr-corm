@@ -1,3 +1,5 @@
+require "./ext/*"
+require "./corm/classes/*"
 require "./corm/*"
 
 class Corm

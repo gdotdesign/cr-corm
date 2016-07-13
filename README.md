@@ -20,10 +20,11 @@ TODO: Finalize feature list
 - [ ] DELETE
 - [x] INNER_JOIN
 - [x] GROUP
-- Functions
-  - [x] MAX
-  - [x] MIN
-  - [x] COUNT
+
+Functions:
+- [x] MAX
+- [x] MIN
+- [x] COUNT
 
 
 ## Usage

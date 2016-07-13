@@ -2,7 +2,7 @@ class Corm
   # A class for reusing an already built partial query,
   # it forwards all calls to the given builder clone.
   class Scope
-    def initialize(@builder : Orm)
+    def initialize(@builder : Corm)
     end
 
     macro method_missing(call)
