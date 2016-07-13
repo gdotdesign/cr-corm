@@ -1,10 +1,8 @@
-# corm
+# Corm
+SQL Statement Builder (currently supporting PostgreSQL)
 
-TODO: Write a description here
 
 ## Installation
-
-
 Add this to your application's `shard.yml`:
 
 ```yaml
@@ -14,19 +12,45 @@ dependencies:
 ```
 
 
-## Usage
+## Features
+TODO: Finalize feature list
+- [x] Basic SELECT
+- [ ] INSERT
+- [ ] CREATE
+- [ ] DELETE
+- [x] INNER_JOIN
+- [x] GROUP
+- Functions
+  - [x] MAX
+  - [x] MIN
+  - [x] COUNT
 
+
+## Usage
+TODO: Write more useful documentation
 
 ```crystal
 require "corm"
+
+# Simple query without type casting
+Corm.table("users")
+    .select("id", "name")
+    .where({ "id" => 23 })
+    .one
+# [[23 : PG::PGValue, "Some User" : PG::PGValue ]]
+
+# Simple query with type casting
+Corm.table("users")
+    .select("id", "name")
+    .where({ "id" => 23 })
+    .one({Int32, String})
+# {23 : Int32, "Some User" : String}
 ```
 
 
-TODO: Write usage instructions here
-
 ## Development
+There is no special development dependencies other then PostgreSQL so far.
 
-TODO: Write development instructions here
 
 ## Contributing
 
