@@ -152,6 +152,7 @@ class Corm
   instanced_method table
 
   def table(value)
+    raise TableAlreadyDefined.new(@table, value) if @table && @table != value
     @table = value
     self
   end

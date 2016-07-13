@@ -10,8 +10,7 @@ describe Corm do
   end
 
   it "build sql" do
-    sql = Corm.table("users")
-              .select("id", "name")
+    sql = Corm.select("id", "name")
               .to_sql
 
     sql[0].should eq(%(SELECT "users"."id", "users"."name" FROM "users"))
