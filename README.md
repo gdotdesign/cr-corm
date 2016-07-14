@@ -33,8 +33,8 @@ Functions:
 - [x] MAX
 - [x] MIN
 - [x] COUNT
-- [ ] SUM
-- [ ] AVG
+- [x] SUM
+- [x] AVG
 - [ ] ROUND
 - [ ] DISTINCT
 

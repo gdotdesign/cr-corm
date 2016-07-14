@@ -42,31 +42,12 @@ class Corm
     end
   end
 
-  # Available SQLFunctions
-  enum SQLFunction
-    Max
-    Min
-    Count
-  end
-
-  class Function
-    def_clone
-
-    @function : SQLFunction
-    @column : Column
-
-    getter! function, column
-
-    def initialize(@function = function, @column = column)
-    end
-  end
-
-  @table : String | Nil
   @method : Symbol | Nil
+  @table : String | Nil
 
-  alias Column = Tuple(String, String)
-  alias Join = Tuple(String, Column, Column)
   alias Where = Tuple(Column, String, PG::PGValue)
+  alias Join = Tuple(String, Column, Column)
+  alias Column = Tuple(String, String)
 
   def_clone
 
@@ -74,14 +55,16 @@ class Corm
 
   def initialize
     @selects = [] of Column | Function
-    @joins = [] of Join
     @groups = [] of Column
     @wheres = [] of Where
+    @joins = [] of Join
   end
 
+  sql_function count, SQLFunction::Count
   sql_function min, SQLFunction::Min
   sql_function max, SQLFunction::Max
-  sql_function count, SQLFunction::Count
+  sql_function sum, SQLFunction::Sum
+  sql_function avg, SQLFunction::Avg
 
   # ----------------- GROUP -----------------------
   instanced_method group
@@ -168,7 +151,7 @@ class Corm
   end
 
   def method(value : Symbol)
-    raise MethodAlreadyDefined.new if @method && @method != value
+    raise MethodAlreadyDefined.new(@method, value) if @method && @method != value
     @method = value
   end
 

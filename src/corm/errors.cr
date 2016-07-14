@@ -1,8 +1,7 @@
 class Corm
   class NoTableDefined < Exception
-    MESSAGE = %(There is no table set at this point so
-calling "[METHOD]"" wouldn't know which
-table to reference.\n)
+    MESSAGE = %(There is no table set at this point so calling
+"[METHOD]"" wouldn't know which table to reference.\n)
 
     def initialize(method)
       @message = MESSAGE.gsub("[METHOD]", method)
@@ -10,7 +9,7 @@ table to reference.\n)
   end
 
   class TableAlreadyDefined < Exception
-    MESSAGE = %(Tried to set the table for this query to "[NEW]"
+    MESSAGE = %(Tried to set the table for this statement to "[NEW]"
 but it has been already set to "[TABLE]"!\n)
 
     def initialize(table, value)
@@ -20,6 +19,13 @@ but it has been already set to "[TABLE]"!\n)
   end
 
   class MethodAlreadyDefined < Exception
+    MESSAGE = %(Tried to set the type of the statement to "[NEW]"
+but it has been alread set to "[METHOD]")
+
+    def initialize(method, value)
+      @message = MESSAGE.gsub("[METHOD]", method)
+                        .gsub("[NEW]", value)
+    end
   end
 
   class IllegalSelect < Exception
