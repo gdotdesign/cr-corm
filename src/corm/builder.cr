@@ -20,13 +20,13 @@ class Corm
     def all(query)
       sql, args = build(query)
 
-      Orm::Runner.run(sql, args).rows
+      Corm::Runner.run(sql, args).rows
     end
 
     def all(types, query)
       sql, args = build(query)
 
-      Orm::Runner.run(types, sql, args).rows
+      Corm::Runner.run(types, sql, args).rows
     end
 
     def one(query)
