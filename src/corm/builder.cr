@@ -56,11 +56,25 @@ class Corm
               ].compact
                .reject { |part| part.empty? }
                .join(" ").strip
+            when :insert
+              ["INSERT INTO",
+                %("#{query.table}"),
+                "VALUES",
+                build_values(query, context),
+              ].join(" ").strip
             else
               ""
             end
 
       {sql, context.args}
+    end
+
+    def build_values(query, context)
+      values = query.insert_values.map_with_index do |value, index|
+        context.args << value
+        "$#{index + 1}"
+      end.join(", ")
+      "(#{values})"
     end
 
     def build_groups(query)

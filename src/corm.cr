@@ -70,10 +70,12 @@ class Corm
 
   def_clone
 
-  getter! selects, joins, groups, wheres
+  getter! selects, joins, groups, wheres, columns, insert_values
 
   def initialize
     @selects = [] of Column | Function
+    @insert_values = [] of PG::PGValue
+    @columns = [] of Column
     @joins = [] of Join
     @groups = [] of Column
     @wheres = [] of Where
@@ -163,11 +165,52 @@ class Corm
     @table
   end
 
+  # ----------------- SCOPE ------------------------
   def scope
     Scope.new self
   end
 
-  def method(value : Symbol)
+  # ----------------- INSERT -----------------------
+  instanced_method insert
+
+  def insert(values = [] of PG::PGValue)
+    method :insert
+    raise "The size of columns and values don't match!" if values.size != @columns.size
+    @insert_values.clear
+    @insert_values.concat values
+    self
+  end
+
+  # ----------------- COLUMNS ------------------------
+  instanced_method columns
+
+  def columns(*args)
+    args.each do |arg|
+      case arg
+      when String
+        columns arg
+      when Column
+        columns arg
+      else
+        raise "IllegalColumns"
+        # raise IllegalSelect.new
+      end
+    end
+    self
+  end
+
+  def columns(column : String)
+    raise NoTableDefined.new("columns") unless @table
+    columns({@table.not_nil!, column})
+  end
+
+  def columns(column : Column)
+    @columns << column
+    self
+  end
+
+  # ----------------- METHOD ------------------------
+  private def method(value : Symbol)
     raise MethodAlreadyDefined.new if @method && @method != value
     @method = value
   end

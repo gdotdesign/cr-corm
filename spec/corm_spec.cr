@@ -83,6 +83,19 @@ describe Corm do
     end
   end
 
+  describe "#columns" do
+    it "should set columns" do
+      statement = Corm.table("users")
+
+      expects_to_change(
+        statement.columns,
+        from: [] of Array(PG::PGValue),
+        to: [{"users", "name"}, {"users", "email"}]) do
+        statement.columns("name", "email")
+      end
+    end
+  end
+
   describe "#where" do
     it "should collect arguments have palceholder for them" do
       statement = Corm.table("users")
