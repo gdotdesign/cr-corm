@@ -6,9 +6,9 @@ class Corm
   # Makes a class method crates an instance and delegates
   # the call to that
   macro instanced_method(name)
-    def self.{{name}}(*args, **options)
+    def self.{{name.id}}(*args, **options)
       instance = new
-      instance.{{name}}(*args, **options)
+      instance.{{name.id}}(*args, **options)
     end
   end
 
@@ -80,15 +80,15 @@ class Corm
   end
 
   # ----------------- SELECTS ----------------------
-  instanced_method select
+  instanced_method "select"
 
   def select(*args)
     args.each do |arg|
       case arg
       when String
-        select arg
+        self.select arg
       when Column
-        select arg
+        self.select arg
       else
         raise IllegalSelect.new
       end
@@ -98,7 +98,7 @@ class Corm
 
   def select(column : String)
     raise NoTableDefined.new("select") unless @table
-    select({@table.not_nil!, column})
+    self.select({@table.not_nil!, column})
   end
 
   def select(column : Column)
