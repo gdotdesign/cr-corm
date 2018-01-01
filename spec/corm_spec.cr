@@ -60,6 +60,9 @@ describe Corm do
         expect_raises(Corm::TableAlreadyDefined) do
           Corm.table("users")
               .table("projects")
+              .where do |c|
+            c[:id].gt(2).and[:name].lt(2)
+          end
         end
       end
     end
